@@ -1,1 +1,0 @@
-# Kisah-Perjalanan-Ferdinand-Magellan
