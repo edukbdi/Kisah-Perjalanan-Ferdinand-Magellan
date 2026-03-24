@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mengelilingi Dunia: Kisah Ferdinand Magellan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1209;
+    --parchment: #f5edd8;
+    --parchment-dark: #e8dcc0;
+    --gold: #b8860b;
+    --gold-light: #d4a017;
+    --rust: #8b2500;
+    --ocean: #1a3a4a;
+    --ocean-mid: #2d5f72;
+    --ocean-light: #4a8fa6;
+    --sea-foam: #c8e6f0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Crimson Text', Georgia, serif;
+    background-color: var(--parchment);
+    color: var(--ink);
+    font-size: 19px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ────────────────────────────────────── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    background: var(--ocean);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 4rem 2rem;
+  }
+
+  /* animated "waves" SVG background */
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 80%, rgba(74,143,166,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(26,58,74,0.6) 0%, transparent 50%),
+      linear-gradient(180deg, #0d2233 0%, #1a3a4a 40%, #2d5f72 100%);
+  }
+
+  .hero-waves {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 180px;
+    opacity: 0.35;
+  }
+
+  /* star field */
+  .stars {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 35%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,240,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 28%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 70% 8%, rgba(255,255,200,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 50%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 45%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 60% 38%, rgba(255,255,220,0.7) 0%, transparent 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 860px;
+  }
+
+  .hero-label {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--parchment);
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.5s forwards;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-sub {
+    font-family: 'Crimson Text', serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: rgba(245,237,216,0.75);
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.7s forwards;
+  }
+
+  .hero-meta {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    color: rgba(245,237,216,0.5);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.9s forwards;
+  }
+
+  .hero-compass {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.2s forwards, spin 20s 1.2s linear infinite;
+    display: block;
+    filter: drop-shadow(0 0 20px rgba(212,160,23,0.5));
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(245,237,216,0.4);
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  .scroll-hint::after {
+    content: '';
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(245,237,216,0.4), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* ── STATS BAR ────────────────────────────── */
+  .stats-bar {
+    background: var(--ocean);
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .stat {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    border-right: 1px solid rgba(184,134,11,0.3);
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--gold-light);
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-label {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,237,216,0.55);
+    margin-top: 0.3rem;
+    display: block;
+  }
+
+  /* ── ARTICLE BODY ─────────────────────────── */
+  .article-body {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-label {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+  }
+
+  h2.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    color: var(--ocean);
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .dropcap::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 5.2em;
+    font-weight: 900;
+    float: left;
+    line-height: 0.75;
+    margin: 0.08em 0.08em 0 0;
+    color: var(--ocean);
+    padding-right: 0.05em;
+  }
+
+  p { margin-bottom: 1.3em; }
+
+  .pull-quote {
+    border-left: 4px solid var(--gold);
+    margin: 2.5rem 0;
+    padding: 1.2rem 2rem;
+    background: linear-gradient(to right, rgba(184,134,11,0.06), transparent);
+  }
+
+  .pull-quote blockquote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.35rem;
+    color: var(--ocean);
+    line-height: 1.5;
+  }
+
+  .pull-quote cite {
+    display: block;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 0.8rem;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3.5rem 0;
+    color: var(--gold);
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .divider span {
+    font-size: 1.2rem;
+  }
+
+  /* ── TIMELINE ─────────────────────────────── */
+  .timeline-section {
+    background: linear-gradient(to bottom, var(--parchment-dark) 0%, var(--parchment) 100%);
+    padding: 5rem 2rem;
+  }
+
+  .timeline-header {
+    max-width: 780px;
+    margin: 0 auto 3.5rem;
+    text-align: center;
+  }
+
+  .timeline {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* vertical spine */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--gold), var(--ocean-mid), var(--gold));
+    transform: translateX(-50%);
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 0;
+    margin-bottom: 3.5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* alternate: odd items — content left, empty right */
+  .timeline-item:nth-child(odd) .tl-content {
+    grid-column: 1;
+    text-align: right;
+    padding-right: 2.5rem;
+  }
+  .timeline-item:nth-child(odd) .tl-empty {
+    grid-column: 3;
+  }
+
+  /* even items — empty left, content right */
+  .timeline-item:nth-child(even) .tl-content {
+    grid-column: 3;
+    text-align: left;
+    padding-left: 2.5rem;
+    order: 3;
+  }
+  .timeline-item:nth-child(even) .tl-empty {
+    grid-column: 1;
+    order: 1;
+  }
+
+  .tl-node {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 0.5rem;
+    z-index: 2;
+  }
+
+  .tl-dot {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--ocean);
+    border: 3px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 5px var(--parchment-dark), 0 0 0 7px rgba(184,134,11,0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .timeline-item:hover .tl-dot {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 5px var(--parchment-dark), 0 0 0 10px rgba(184,134,11,0.4);
+  }
+
+  .tl-date {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ocean-mid);
+    margin-top: 0.5rem;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .tl-content {
+    padding-top: 0.25rem;
+  }
+
+  .tl-tag {
+    display: inline-block;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.7rem;
+    border-radius: 2px;
+    margin-bottom: 0.4rem;
+  }
+
+  .tag-depart { background: rgba(26,58,74,0.12); color: var(--ocean); }
+  .tag-crisis { background: rgba(139,37,0,0.12); color: var(--rust); }
+  .tag-discover { background: rgba(184,134,11,0.15); color: var(--gold); }
+  .tag-death { background: rgba(60,0,0,0.15); color: #6b0000; }
+  .tag-return { background: rgba(26,58,74,0.2); color: var(--ocean); }
+
+  .tl-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ocean);
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+  }
+
+  .tl-text {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: #3a2e1a;
+  }
+
+  .tl-empty { /* spacer */ }
+
+  /* ── LEGACY SECTION ───────────────────────── */
+  .legacy-section {
+    background: var(--ocean);
+    padding: 5rem 2rem;
+    color: var(--parchment);
+  }
+
+  .legacy-section .section-label { color: var(--gold-light); }
+
+  .legacy-section h2.section-title {
+    color: var(--parchment);
+  }
+
+  .legacy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 900px;
+    margin: 3rem auto 0;
+  }
+
+  .legacy-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(184,134,11,0.3);
+    padding: 2rem 1.5rem;
+    border-radius: 2px;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+
+  .legacy-card:hover {
+    background: rgba(255,255,255,0.09);
+    border-color: var(--gold);
+  }
+
+  .legacy-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+
+  .legacy-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 0.6rem;
+  }
+
+  .legacy-card p {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(245,237,216,0.8);
+    margin-bottom: 0;
+  }
+
+  /* ── SOURCES ──────────────────────────────── */
+  .sources-section {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3.5rem 2rem 5rem;
+  }
+
+  .sources-section h3 {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 1px solid rgba(184,134,11,0.3);
+    padding-bottom: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .sources-list {
+    list-style: none;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.78rem;
+    line-height: 1.9;
+    color: #5a4a2a;
+  }
+
+  .sources-list li::before {
+    content: '→ ';
+    color: var(--gold);
+  }
+
+  /* ── FOOTER ───────────────────────────────── */
+  footer {
+    background: var(--ocean);
+    text-align: center;
+    padding: 2rem;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,237,216,0.3);
+    border-top: 1px solid rgba(184,134,11,0.2);
+  }
+
+  /* ── ANIMATIONS ───────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50%       { opacity: 1; transform: scaleY(1.3); }
+  }
+
+  /* ── RESPONSIVE ───────────────────────────── */
+  @media (max-width: 700px) {
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .stat { border-right: none; border-bottom: 1px solid rgba(184,134,11,0.2); }
+
+    .timeline::before { left: 28px; }
+
+    .timeline-item {
+      grid-template-columns: 56px 1fr;
+      grid-template-rows: auto;
+    }
+
+    .timeline-item:nth-child(odd) .tl-content,
+    .timeline-item:nth-child(even) .tl-content {
+      grid-column: 2;
+      grid-row: 1;
+      text-align: left;
+      padding-left: 1.5rem;
+      padding-right: 0;
+    }
+
+    .tl-node {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .tl-empty { display: none; }
+
+    .legacy-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <div class="stars"></div>
+  <svg class="hero-waves" viewBox="0 0 1440 180" preserveAspectRatio="none" fill="none">
+    <path d="M0,80 C240,140 480,20 720,80 C960,140 1200,20 1440,80 L1440,180 L0,180 Z" fill="rgba(74,143,166,0.2)"/>
+    <path d="M0,110 C200,60 400,155 600,100 C800,45 1000,155 1200,100 C1300,73 1380,90 1440,100 L1440,180 L0,180 Z" fill="rgba(26,58,74,0.5)"/>
+  </svg>
+
+  <div class="hero-content">
+    <span class="hero-compass">🧭</span>
+    <div class="hero-label">Kisah Agung Penjelajahan Dunia · 1519–1522</div>
+    <h1>Mengelilingi<br><em>Bumi</em> yang Bulat</h1>
+    <p class="hero-sub">Perjalanan tiga tahun Ferdinand Magellan yang mengubah pemahaman manusia tentang dunia selamanya</p>
+    <div class="hero-meta">Ferdinand Magellan · Juan Sebastián Elcano · 270 Awak Kapal · 60.440 km</div>
+  </div>
+
+  <div class="scroll-hint">Gulir</div>
+</header>
+
+<!-- ── STATS BAR ── -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-number">60.440</span>
+    <span class="stat-label">km jarak tempuh</span>
+  </div>
+  <div class="stat">
+    <span class="stat-number">1.082</span>
+    <span class="stat-label">hari berlayar</span>
+  </div>
+  <div class="stat">
+    <span class="stat-number">5</span>
+    <span class="stat-label">kapal berangkat</span>
+  </div>
+  <div class="stat">
+    <span class="stat-number">18</span>
+    <span class="stat-label">awak yang pulang</span>
+  </div>
+</div>
+
+<!-- ── ARTICLE BODY ── -->
+<article class="article-body">
+  <div class="section-label">Latar Belakang</div>
+  <h2 class="section-title">Pelaut Portugal yang Mengabdi pada Spanyol</h2>
+
+  <p class="dropcap">Ferdinand Magellan lahir sekitar tahun 1480 di Sabrosa, Portugal, dari keluarga bangsawan kecil. Sejak muda ia sudah mengabdi di istana sebagai pelayan Ratu Leonor, sebelum kemudian memilih karier sebagai pelaut dan prajurit di armada portugis yang menjelajahi samudra Hindia, pantai Afrika Timur, serta menguasai Malaka pada 1511.</p>
+
+  <p>Setelah bertahun-tahun bertempur dan berlayar di Asia, Magellan kembali ke Portugal dengan harapan mendapat pengakuan layak dari Mahkota. Namun Raja Manuel I justru menolak seluruh petisinya. Kecewa dan kehilangan kepercayaan terhadap negaranya sendiri, Magellan mengambil keputusan berani: pada 1517, ia melepas kewarganegaraan Portugisnya dan pindah ke Seville, Spanyol, membawa serta pengetahuannya tentang jalur maritim Asia dan kepulauan rempah-rempah.</p>
+
+  <p>Di Spanyol, ia memenangkan kepercayaan Raja Carlos I dengan menawarkan sesuatu yang sangat menggiurkan: jalur barat menuju Kepulauan Maluku (Spice Islands, kini bagian dari Indonesia), tanpa harus melewati perairan yang dikuasai Portugal. Spanyol membiayai ekspedisi tersebut, dan Magellan pun memulai persiapan salah satu pelayaran paling ambisius dalam sejarah manusia.</p>
+
+  <div class="pull-quote">
+    <blockquote>
+      "Kapal Victoria — kapal terkecil dalam armada — kembali ke pelabuhan keberangkatan setelah menyelesaikan keliling bumi pertama dalam sejarah, dengan hanya 18 orang dari 270 awak asal."
+    </blockquote>
+    <cite>Wikipedia — Magellan Expedition</cite>
+  </div>
+
+  <p>Ekspedisi ini bukan sekadar pencarian rempah-rempah. Ia menjadi pembuktian empiris bahwa bumi berbentuk bulat, sekaligus membuka era globalisasi pertama dalam sejarah umat manusia — ketika jalur-jalur perdagangan mulai menghubungkan semua benua dalam satu jaringan dunia.</p>
+
+  <div class="divider"><span>⚓</span></div>
+
+  <div class="section-label">Armada &amp; Awak</div>
+  <h2 class="section-title">Lima Kapal, Satu Misi</h2>
+
+  <p>Pada 20 September 1519, armada terdiri dari lima kapal — <em>Trinidad</em> (kapal bendera), <em>San Antonio</em>, <em>Concepción</em>, <em>Victoria</em>, dan <em>Santiago</em> — meninggalkan pelabuhan Sanlúcar de Barrameda di selatan Spanyol. Sekitar 270 orang dari berbagai bangsa — Spanyol, Portugal, Jerman, Yunani, Prancis, bahkan awak keturunan Afrika — turut serta dalam pelayaran ini.</p>
+
+  <p>Pencatat resmi ekspedisi adalah Antonio Pigafetta, seorang Venesia muda yang kemudian menulis jurnal perjalanan rinci — sumber primer terpenting tentang ekspedisi ini. Dialah yang memastikan kisah ini tidak hilang ditelan waktu.</p>
+</article>
+
+<!-- ── TIMELINE ── -->
+<section class="timeline-section">
+  <div class="timeline-header">
+    <div class="section-label">Kronologi Perjalanan</div>
+    <h2 class="section-title" style="color:var(--ocean)">Timeline Ekspedisi 1519–1522</h2>
+    <p style="color:#5a4a2a; font-style:italic; font-size:1rem;">Dari Sanlúcar de Barrameda hingga kembali ke titik yang sama — tiga tahun penuh badai, kelaparan, pemberontakan, dan kematian.</p>
+  </div>
+
+  <div class="timeline">
+
+    <!-- 1 -->
+    <div class="timeline-item">
+      <div class="tl-content">
+        <span class="tl-tag tag-depart">Keberangkatan</span>
+        <div class="tl-title">Armada Bertolak dari Spanyol</div>
+        <div class="tl-text">Lima kapal meninggalkan Sanlúcar de Barrameda pada 20 September 1519 membawa ~270 awak. Setelah singgah singkat di Kepulauan Canary, armada menyeberangi Atlantik dan tiba di Teluk Santa Lucia (kini Rio de Janeiro) pada 13 November 1519.</div>
+      </div>
+      <div class="tl-node">
+        <div class="tl-dot">⛵</div>
+        <div class="tl-date">Sep–Des 1519</div>
+      </div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 2 -->
+    <div class="timeline-item">
+      <div class="tl-empty"></div>
+      <div class="tl-node">
+        <div class="tl-dot">❄️</div>
+        <div class="tl-date">Mar–Agt 1520</div>
+      </div>
+      <div class="tl-content">
+        <span class="tl-tag tag-crisis">Pemberontakan</span>
+        <div class="tl-title">Musim Dingin &amp; Mutiny di San Julián</div>
+        <div class="tl-text">Armada berlabuh di Teluk San Julián, Patagonia (Argentina selatan), untuk melewati musim dingin. Tiga kapten Spanyol — Cartagena, Mendoza, dan Quesada — memimpin pemberontakan menentang Magellan. Dengan cepat dan tegas, Magellan menumpas pemberontakan: Mendoza terbunuh, Quesada dieksekusi, Cartagena ditinggalkan. Santiago juga karam dalam badai selama ekspedisi pengintaian.</div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="timeline-item">
+      <div class="tl-content">
+        <span class="tl-tag tag-discover">Penemuan</span>
+        <div class="tl-title">Selat Magellan Ditemukan</div>
+        <div class="tl-text">Armada mencapai tanjung besar pada 21 Oktober 1520 yang kini dikenal sebagai Selat Magellan. Butuh sebulan penuh untuk mengarungi labirin kanal ini. Di tengah perjalanan, kapal San Antonio berbalik pulang ke Spanyol secara diam-diam. Tiga kapal yang tersisa akhirnya keluar ke "Laut Selatan" pada 28 November 1520 — samudra yang begitu tenang sehingga Magellan menamakannya Mar Pacifico (Samudra Pasifik).</div>
+      </div>
+      <div class="tl-node">
+        <div class="tl-dot">🗺️</div>
+        <div class="tl-date">Okt–Nov 1520</div>
+      </div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 4 -->
+    <div class="timeline-item">
+      <div class="tl-empty"></div>
+      <div class="tl-node">
+        <div class="tl-dot">🌊</div>
+        <div class="tl-date">Des 1520–Mar 1521</div>
+      </div>
+      <div class="tl-content">
+        <span class="tl-tag tag-crisis">Ujian Terberat</span>
+        <div class="tl-title">Menyeberangi Pasifik: 98 Hari Tersiksa</div>
+        <div class="tl-text">Armada menyeberangi Samudra Pasifik selama 98 hari tanpa menemukan daratan berarti. Perbekalan habis; awak memakan kulit kapal, tikus, dan serbuk kayu. Skorbut merenggut banyak nyawa. Pada 6 Maret 1521 mereka akhirnya mencapai Guam dan bertemu penduduk Chamorro, sebelum melanjutkan perjalanan ke kepulauan Filipina pada 16 Maret 1521.</div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="timeline-item">
+      <div class="tl-content">
+        <span class="tl-tag tag-discover">Filipina</span>
+        <div class="tl-title">Tiba di Filipina &amp; Misa Paskah Pertama</div>
+        <div class="tl-text">Armada mendarat di Limasawa, Filipina. Pada Minggu Paskah, 31 Maret 1521, dilangsungkan Misa pertama di Filipina. Magellan berhasil menjalin persekutuan dengan Rajah Humabon dari Cebu, dan banyak penduduk setempat yang dibaptis menjadi Kristen. Ekspedisi ini juga membuktikan bahwa kapal-kapal Eropa bisa berlayar ke arah barat sejauh kepulauan Asia Tenggara.</div>
+      </div>
+      <div class="tl-node">
+        <div class="tl-dot">🏝️</div>
+        <div class="tl-date">Mar–Apr 1521</div>
+      </div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 6 -->
+    <div class="timeline-item">
+      <div class="tl-empty"></div>
+      <div class="tl-node">
+        <div class="tl-dot">⚔️</div>
+        <div class="tl-date">27 April 1521</div>
+      </div>
+      <div class="tl-content">
+        <span class="tl-tag tag-death">Kematian</span>
+        <div class="tl-title">Magellan Gugur di Mactan</div>
+        <div class="tl-text">Magellan memimpin serangan ke pulau Mactan untuk membantu sekutu barunya melawan kepala suku Lapu-Lapu. Pasukan Eropa yang kecil terjebak di perairan dangkal dan dikelilingi ratusan pejuang Mactan. Ferdinand Magellan tewas dalam pertempuran itu pada 27 April 1521. Ia tidak pernah menyaksikan kapalnya kembali ke Spanyol.</div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="timeline-item">
+      <div class="tl-content">
+        <span class="tl-tag tag-discover">Maluku</span>
+        <div class="tl-title">Mencapai Kepulauan Rempah</div>
+        <div class="tl-text">Setelah kematian Magellan dan beberapa kapten penggantinya, komando akhirnya jatuh ke tangan Juan Sebastián Elcano. Kapal Concepción dibakar karena kekurangan awak. Hanya Trinidad dan Victoria yang melanjutkan perjalanan ke selatan dan mencapai Tidore, kepulauan Maluku (kini bagian Indonesia), pada 8 November 1521 — tujuan awal ekspedisi. Kapal-kapal pun diisi dengan cengkeh dan rempah-rempah berharga.</div>
+      </div>
+      <div class="tl-node">
+        <div class="tl-dot">🌿</div>
+        <div class="tl-date">Nov 1521</div>
+      </div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 8 -->
+    <div class="timeline-item">
+      <div class="tl-empty"></div>
+      <div class="tl-node">
+        <div class="tl-dot">🌍</div>
+        <div class="tl-date">Des 1521–Sep 1522</div>
+      </div>
+      <div class="tl-content">
+        <span class="tl-tag tag-discover">Pulang</span>
+        <div class="tl-title">Elcano Memimpin Kepulangan</div>
+        <div class="tl-text">Trinidad mencoba kembali via Pasifik namun gagal dan ditangkap Portugal. Victoria di bawah komando Elcano memilih jalur barat melalui Samudra Hindia, melewati Tanjung Harapan (18 Mei 1522), dan naik ke utara sepanjang pantai barat Afrika. Karena takut dicegat armada Portugis, awak sengaja menghindari singgah — hingga kelaparan memaksa mereka mampir di Kepulauan Tanjung Verde.</div>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="timeline-item">
+      <div class="tl-content">
+        <span class="tl-tag tag-return">Kembali</span>
+        <div class="tl-title">Victoria Kembali ke Spanyol</div>
+        <div class="tl-text">Pada 6 September 1522, kapal Victoria tiba di Sanlúcar de Barrameda — hampir persis tiga tahun setelah berangkat. Dari 270 orang yang berlayar, hanya 18 yang kembali. Elcano dan 17 awak berjalan kaki tanpa alas kaki membawa lilin menyala ke gereja sebagai nazar. Mereka menghadap Raja Carlos I di Valladolid dan menjadi 18 orang Eropa pertama yang mengelilingi bumi.</div>
+      </div>
+      <div class="tl-node">
+        <div class="tl-dot">🏆</div>
+        <div class="tl-date">6 Sep 1522</div>
+      </div>
+      <div class="tl-empty"></div>
+    </div>
+
+  </div><!-- /timeline -->
+</section>
+
+<!-- ── LEGACY ── -->
+<section class="legacy-section">
+  <div style="max-width:780px; margin:0 auto; text-align:center; margin-bottom:0;">
+    <div class="section-label">Warisan Sejarah</div>
+    <h2 class="section-title">Apa yang Diwariskan Magellan?</h2>
+    <p style="color:rgba(245,237,216,0.75); font-style:italic; max-width:600px; margin:0 auto;">Ekspedisi Magellan–Elcano bukan sekadar petualangan. Ia mengubah peta dunia, membuka era perdagangan global, dan membuktikan bahwa bumi yang kita pijak memang bulat.</p>
+  </div>
+
+  <div class="legacy-grid">
+    <div class="legacy-card">
+      <span class="legacy-icon">🌐</span>
+      <h3>Bumi Itu Bulat</h3>
+      <p>Ekspedisi ini menjadi bukti empiris pertama bahwa bumi berbentuk bulat. Mereka berlayar terus ke barat dan kembali dari timur — membuktikan teori yang selama ini masih diperdebatkan.</p>
+    </div>
+    <div class="legacy-card">
+      <span class="legacy-icon">🗓️</span>
+      <h3>Garis Tanggal Internasional</h3>
+      <p>Awak Victoria bingung mengapa kalender mereka tertinggal sehari dibanding orang Spanyol. Fenomena ini menjadi cikal bakal konsep Garis Tanggal Internasional yang kita kenal hingga kini.</p>
+    </div>
+    <div class="legacy-card">
+      <span class="legacy-icon">📦</span>
+      <h3>Globalisasi Perdagangan</h3>
+      <p>Rute barat ke Kepulauan Rempah membuka jalur dagang baru bagi Spanyol. Pada abad ke-17, wilayah Spanyol memproduksi sebagian besar perak dunia, sepertiga di antaranya mengalir ke China lewat perdagangan ini.</p>
+    </div>
+    <div class="legacy-card">
+      <span class="legacy-icon">🇵🇭</span>
+      <h3>Filipina &amp; Maluku</h3>
+      <p>Peta kekuasaan Asia Tenggara berubah. Spanyol menguasai Filipina; Portugal mengklaim Maluku lewat Perjanjian Zaragoza 1529. Ekspedisi ini menentukan nasib kawasan selama berabad-abad.</p>
+    </div>
+    <div class="legacy-card">
+      <span class="legacy-icon">📜</span>
+      <h3>Jurnal Pigafetta</h3>
+      <p>Catatan harian Antonio Pigafetta adalah sumber primer tentang ekspedisi ini — mencatat bahasa, budaya, flora, dan fauna yang ditemui, sekaligus memastikan kisah ini tidak terlupakan.</p>
+    </div>
+    <div class="legacy-card">
+      <span class="legacy-icon">⭐</span>
+      <h3>Awan Magellan</h3>
+      <p>Nama Magellan diabadikan di langit: dua galaksi satelit Bima Sakti yang dapat dilihat dari belahan bumi selatan — Large &amp; Small Magellanic Cloud — dinamai untuk menghormatinya.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── SOURCES ── -->
+<section class="sources-section">
+  <h3>Sumber &amp; Referensi</h3>
+  <ul class="sources-list">
+    <li>Wikipedia — <em>Magellan expedition</em> &amp; <em>Timeline of the Magellan expedition</em></li>
+    <li>Encyclopædia Britannica — <em>Ferdinand Magellan: Circumnavigation of the Globe</em></li>
+    <li>History.com — <em>Ferdinand Magellan: Early Years, Expedition &amp; Legacy</em></li>
+    <li>Origins: Current Events in Historical Perspective (Ohio State University) — <em>Magellan's Circumnavigation of the Earth</em></li>
+    <li>Penn Today (University of Pennsylvania) — <em>Around the World in 1,082 Days</em> (Interview with Prof. Antonio Feros)</li>
+    <li>PubMed Central / NCBI — <em>Ferdinand Magellan (1480–1521) — 500 years from the expedition: the first step towards globalization</em></li>
+    <li>World History Encyclopedia — <em>Timeline: Ferdinand Magellan</em></li>
+    <li>Antonio Pigafetta — <em>Relazione del primo viaggio intorno al mondo</em> (Jurnal primer ekspedisi, abad ke-16)</li>
+  </ul>
+</section>
+
+<footer>
+  <p>Artikel ini disusun berdasarkan sumber-sumber akademis dan ensiklopedis terpercaya · Ferdinand Magellan 1480–1521</p>
+</footer>
+
+<script>
+  // Intersection Observer for timeline animation
+  const items = document.querySelectorAll('.timeline-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  items.forEach(item => observer.observe(item));
+</script>
+</body>
+</html>
